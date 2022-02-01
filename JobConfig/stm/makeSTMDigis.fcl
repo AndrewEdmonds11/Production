@@ -1,0 +1,47 @@
+#
+# Generate Eu152 source in front of STM detectors
+#
+
+#include "Offline/fcl/standardServices.fcl"
+#include "Offline/CommonMC/fcl/prolog.fcl"
+#include "Production/JobConfig/common/prolog.fcl"
+#include "Production/JobConfig/pileup/prolog.fcl"
+
+process_name: MakeSTMDigis
+
+source : {
+  module_type : RootInput
+}
+
+services : @local::Services.Sim
+physics: {
+  producers : {
+    makeSTMDigis : { module_type : MakeSTMDigis
+                     stmStepsTag : "makeSTMSteps"
+    }
+  }
+  filters : {
+  }
+  analyzers : {
+  }
+  # setup paths
+  stmDigiPath : [ makeSTMDigis ]
+  trigger_paths: [ stmDigiPath ]
+  outPath : [ STMOutput ]
+  end_paths: [outPath]
+}
+
+outputs: {
+
+  STMOutput : {
+    module_type: RootOutput
+    outputCommands:   [ "keep *_*_*_*" ] #,
+#      "keep *_HPGeFilter_*_*",
+#      "keep *_genCounter_*_*"
+#    ]
+    SelectEvents: [stmDigiPath]
+    fileName : "dig.owner.STM.version.sequencer.art"
+  }
+}
+
+services.SeedService.baseSeed: 1225215210856415233
