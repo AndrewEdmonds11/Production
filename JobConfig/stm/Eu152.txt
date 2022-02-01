@@ -1,0 +1,57 @@
+//
+// 
+//
+// $Id: particleGun.txt,v 1.3 2012/02/17 03:23:30 tassiell Exp $
+// $Author: tassiell $
+// $Date: 2012/02/17 03:23:30 $
+//
+// Original author Rob Kutschke
+// added ParticleGun process
+
+// enable process
+bool particleGun.do = true;
+
+// Limits on cos(polar angle):
+//double particleGun.czmin =  .85;
+double particleGun.czmin =  -1.0;//0.999; //0.0;
+double particleGun.czmax =  1.0; // -0.8;
+
+// Limits on phi angle:
+//double particleGun.phimin = 4.9740;
+//double particleGun.phimax = 4.9744;
+
+// Time limits in ns, relative to protons on target.
+double particleGun.tmin  =  0.0;
+double particleGun.tmax  =  1700.0;
+
+// position
+//vector<double> particleGun.point = {-3436.426,-467.574,40447.59}; // just before spot-size collimator
+vector<double> particleGun.point = {-3904,0,40690};
+string particleGun.sourceShape = "cylinder_z";
+vector<double> particleGun.halfLength = { 2.5., 2.5, 0.05 };
+
+// Limits on momentum (I'm pretty sure this is MeV/c):
+double particleGun.pmin = 0;//0.0059;
+double particleGun.pmax = 0;//0.0059;
+
+// vector<double> particleGun.momentumParameters = // AN ARRAY NEEDS TO BE PUT IN
+//HERE
+
+// Particle Id 
+int particleGun.id = 1000631520;
+
+// Mean particle.
+double particleGun.mean =  -1;
+
+// Control of histograms.
+bool particleGun.doHistograms = true;
+bool particleGun.doNtuples = true;
+
+bool particleGun.verbose = false;
+
+
+// This tells emacs to view this file in c++ mode.
+// Local Variables:
+// mode:c++
+// End:
+

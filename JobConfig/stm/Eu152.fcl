@@ -1,0 +1,69 @@
+#
+# Generate Eu152 source in front of STM detectors
+#
+
+#include "Offline/fcl/standardServices.fcl"
+#include "Offline/CommonMC/fcl/prolog.fcl"
+#include "Production/JobConfig/common/prolog.fcl"
+#include "Production/JobConfig/pileup/prolog.fcl"
+
+BEGIN_PROLOG
+STMSequence : [ HPGeFilter ] # this will have MakeSTMSteps at some point
+END_PROLOG
+
+process_name: Eu152
+
+source : {
+  module_type : EmptyEvent
+  maxEvents : @nil
+}
+
+services : @local::Services.Sim
+physics: {
+  producers : {
+    @table::Common.producers
+    generate : { module_type: EventGenerator
+    	       	 particleGun : { do : 1 }
+		 inputfile : "Production/JobConfig/stm/Eu152.txt"
+    }
+  }
+  filters : {
+    @table::Common.filters
+  }
+  analyzers : {
+    @table::Common.analyzers
+  }
+  # setup paths
+  stmPath : [ generate, genCounter, @sequence::Common.g4Sequence, @sequence::STMSequence ]
+  trigger_paths: [ stmPath ]
+  outPath : [ STMOutput ]
+  end_paths: [outPath]
+}
+
+outputs: {
+
+  STMOutput : {
+    module_type: RootOutput
+    outputCommands:   [ "drop *_*_*_*",
+      "keep *_HPGeFilter_*_*",
+      "keep *_genCounter_*_*"
+    ]
+    SelectEvents: [stmPath]
+    fileName : "sim.owner.Eu152.version.sequencer.art"
+  }
+}
+
+physics.filters.HPGeFilter : {
+      module_type: FilterG4Out
+      mainHitInputs : [ "g4run:stmDet1" ] 
+      extraHitInputs : [ "g4run:virtualdetector" ]
+      vetoDaughters: []
+}
+
+#include "Production/JobConfig/common/epilog.fcl"
+
+physics.producers.g4run.SDConfig.sensitiveVolumes : [ "stmDet1" ] 
+services.SeedService.baseSeed: 1225215210856415233
+
+#physics.producers.g4run.debug.trackingVerbosityLevel : 1
+#physics.producers.g4run.debug.steppingVerbosityLevel : 1
