@@ -1,0 +1,33 @@
+#
+# Generate Eu152 source in front of STM detectors
+#
+
+#include "Offline/fcl/standardServices.fcl"
+#include "Offline/CommonMC/fcl/prolog.fcl"
+#include "Production/JobConfig/common/prolog.fcl"
+#include "Production/JobConfig/pileup/prolog.fcl"
+
+process_name: PlotSTMSpectrum
+
+source : {
+  module_type : RootInput
+}
+
+services : @local::Services.Reco
+physics: {
+  producers : {
+  }
+  filters : {
+  }
+  analyzers : {
+    plotSTMSpectrum : { module_type : PlotSTMSpectrum
+                     stmHitsTag : "makeSTMHits"
+    }
+  }
+  # setup paths
+  trigger_paths: [  ]
+  anaPath : [ plotSTMSpectrum ]
+  end_paths: [anaPath]
+}
+
+services.TFileService.fileName : "stmSpectrum.root"
