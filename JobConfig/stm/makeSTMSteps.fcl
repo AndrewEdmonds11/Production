@@ -1,5 +1,5 @@
 #
-# Generate Eu152 source in front of STM detectors
+# Create STMSteps from StepPointMCs
 #
 
 #include "Offline/fcl/standardServices.fcl"

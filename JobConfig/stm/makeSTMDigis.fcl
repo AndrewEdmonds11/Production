@@ -1,5 +1,5 @@
 #
-# Generate Eu152 source in front of STM detectors
+# Create STMDigis from STMSteps
 #
 
 #include "Offline/fcl/standardServices.fcl"
