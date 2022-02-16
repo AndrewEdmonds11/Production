@@ -26,9 +26,9 @@ double particleGun.tmax  =  1700.0;
 
 // position
 //vector<double> particleGun.point = {-3436.426,-467.574,40447.59}; // just before spot-size collimator
-vector<double> particleGun.point = {-3914,10,40690};
+vector<double> particleGun.point = {-3854,0,40739};
 string particleGun.sourceShape = "cylinder_z";
-vector<double> particleGun.halfLength = { 2.5., 2.5, 0.05 };
+vector<double> particleGun.halfLength = { 0.05, 0.05, 0.05 };
 
 // Limits on momentum (I'm pretty sure this is MeV/c):
 double particleGun.pmin = 0;//0.0059;
