@@ -40,7 +40,7 @@ outputs: {
 #      "keep *_genCounter_*_*"
 #    ]
     SelectEvents: [stmDigiPath]
-    fileName : "dig.owner.STM.version.sequencer.art"
+    fileName : "dig.owner.STMFromBin.version.sequencer.art"
   }
 }
 
