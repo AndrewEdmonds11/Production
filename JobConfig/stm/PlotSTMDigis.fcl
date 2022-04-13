@@ -1,0 +1,33 @@
+#
+# Analyze STMHits and create histogram of energy spectrum
+#
+
+#include "Offline/fcl/standardServices.fcl"
+#include "Offline/CommonMC/fcl/prolog.fcl"
+#include "Production/JobConfig/common/prolog.fcl"
+#include "Production/JobConfig/pileup/prolog.fcl"
+
+process_name: PlotSTMDigis
+
+source : {
+  module_type : RootInput
+}
+
+services : @local::Services.Reco
+physics: {
+  producers : {
+  }
+  filters : {
+  }
+  analyzers : {
+    plotSTMDigis : { module_type : PlotSTMDigis
+                     stmDigisTag : "makeSTMDigis"
+    }
+  }
+  # setup paths
+  trigger_paths: [  ]
+  anaPath : [ plotSTMDigis ]
+  end_paths: [anaPath]
+}
+
+services.TFileService.fileName : "stmDigis.root"
