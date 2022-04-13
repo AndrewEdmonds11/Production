@@ -21,7 +21,7 @@ physics: {
   }
   analyzers : {
     plotSTMDigis : { module_type : PlotSTMDigis
-                     stmDigisTag : "makeSTMDigis"
+                     stmDigisTag : "FromSTMTestBeamData"
     }
   }
   # setup paths
