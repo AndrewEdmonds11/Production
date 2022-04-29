@@ -3,9 +3,6 @@
 #
 
 #include "Offline/fcl/standardServices.fcl"
-#include "Offline/CommonMC/fcl/prolog.fcl"
-#include "Production/JobConfig/common/prolog.fcl"
-#include "Production/JobConfig/pileup/prolog.fcl"
 
 process_name: MakeSTMDigis
 
@@ -16,8 +13,11 @@ source : {
 services : @local::Services.Sim
 physics: {
   producers : {
-    makeSTMDigis : { module_type : MakeSTMDigis
-                     stmStepsTag : "makeSTMSteps"
+    HPGeDigis : { module_type : MakeSTMDigis
+                  stmStepsTag : "HPGeSteps"
+    }
+    LaBrDigis : { module_type : MakeSTMDigis
+                  stmStepsTag : "LaBrSteps"
     }
   }
   filters : {
@@ -25,7 +25,7 @@ physics: {
   analyzers : {
   }
   # setup paths
-  stmDigiPath : [ makeSTMDigis ]
+  stmDigiPath : [ HPGeDigis, LaBrDigis ]
   trigger_paths: [ stmDigiPath ]
   outPath : [ STMOutput ]
   end_paths: [outPath]
@@ -35,13 +35,12 @@ outputs: {
 
   STMOutput : {
     module_type: RootOutput
-    outputCommands:   [ "keep *_*_*_*" ] #,
-#      "keep *_HPGeFilter_*_*",
-#      "keep *_genCounter_*_*"
-#    ]
+    outputCommands:   [ "keep *_*_*_*" ] # keep everything for the time being
     SelectEvents: [stmDigiPath]
     fileName : "dig.owner.STM.version.sequencer.art"
   }
 }
+
+#include "Production/JobConfig/common/epilog.fcl"
 
 services.SeedService.baseSeed: 1225215210856415233
