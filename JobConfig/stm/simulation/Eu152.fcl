@@ -29,9 +29,8 @@ physics: {
     @table::Common.analyzers
   }
   # setup paths
-  stmHPGePath : [ generate, genCounter, @sequence::Common.g4Sequence, HPGeFilter ]
-  stmLaBrPath : [ generate, genCounter, @sequence::Common.g4Sequence, LaBrFilter ]
-  trigger_paths: [ stmHPGePath, stmLaBrPath ]
+  stmPath : [ generate, genCounter, @sequence::Common.g4Sequence, STMFilter ]
+  trigger_paths: [ stmPath ]
   outPath : [ STMOutput ]
   end_paths: [outPath]
 }
@@ -41,25 +40,17 @@ outputs: {
   STMOutput : {
     module_type: RootOutput
     outputCommands:   [ "drop *_*_*_*",
-      "keep *_HPGeFilter_*_*",
-      "keep *_LaBrFilter_*_*",
+      "keep *_STMFilter_*_*",
       "keep *_genCounter_*_*"
     ]
-    SelectEvents: [stmHPGePath, stmLaBrPath]
+    SelectEvents: [stmPath]
     fileName : "sim.owner.Eu152.version.sequencer.art"
   }
 }
 
-physics.filters.HPGeFilter : {
+physics.filters.STMFilter : {
       module_type: FilterG4Out
-      mainHitInputs : [ "g4run:stmDet1" ] 
-      extraHitInputs : [ "g4run:virtualdetector" ]
-      vetoDaughters: []
-}
-
-physics.filters.LaBrFilter : {
-      module_type: FilterG4Out
-      mainHitInputs : [ "g4run:stmDet2" ] 
+      mainHitInputs : [ "g4run:stmDet1", "g4run:stmDet2" ] 
       extraHitInputs : [ "g4run:virtualdetector" ]
       vetoDaughters: []
 }
