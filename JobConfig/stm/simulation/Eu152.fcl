@@ -3,13 +3,8 @@
 #
 
 #include "Offline/fcl/standardServices.fcl"
-#include "Offline/CommonMC/fcl/prolog.fcl"
 #include "Production/JobConfig/common/prolog.fcl"
-#include "Production/JobConfig/pileup/prolog.fcl"
 
-BEGIN_PROLOG
-STMSequence : [ HPGeFilter ] # this will have MakeSTMSteps at some point
-END_PROLOG
 
 process_name: Eu152
 
@@ -24,7 +19,7 @@ physics: {
     @table::Common.producers
     generate : { module_type: EventGenerator
     	       	 particleGun : { do : 1 }
-		 inputfile : "Production/JobConfig/stm/Eu152.txt"
+		 inputfile : "Production/JobConfig/stm/simulation/Eu152.txt"
     }
   }
   filters : {
@@ -34,8 +29,9 @@ physics: {
     @table::Common.analyzers
   }
   # setup paths
-  stmPath : [ generate, genCounter, @sequence::Common.g4Sequence, @sequence::STMSequence ]
-  trigger_paths: [ stmPath ]
+  stmHPGePath : [ generate, genCounter, @sequence::Common.g4Sequence, HPGeFilter ]
+  stmLaBrPath : [ generate, genCounter, @sequence::Common.g4Sequence, LaBrFilter ]
+  trigger_paths: [ stmHPGePath, stmLaBrPath ]
   outPath : [ STMOutput ]
   end_paths: [outPath]
 }
@@ -46,9 +42,10 @@ outputs: {
     module_type: RootOutput
     outputCommands:   [ "drop *_*_*_*",
       "keep *_HPGeFilter_*_*",
+      "keep *_LaBrFilter_*_*",
       "keep *_genCounter_*_*"
     ]
-    SelectEvents: [stmPath]
+    SelectEvents: [stmHPGePath, stmLaBrPath]
     fileName : "sim.owner.Eu152.version.sequencer.art"
   }
 }
@@ -60,10 +57,15 @@ physics.filters.HPGeFilter : {
       vetoDaughters: []
 }
 
+physics.filters.LaBrFilter : {
+      module_type: FilterG4Out
+      mainHitInputs : [ "g4run:stmDet2" ] 
+      extraHitInputs : [ "g4run:virtualdetector" ]
+      vetoDaughters: []
+}
+
 #include "Production/JobConfig/common/epilog.fcl"
 
-physics.producers.g4run.SDConfig.sensitiveVolumes : [ "stmDet1" ] 
+physics.producers.g4run.SDConfig.sensitiveVolumes : [ "stmDet1", "stmDet2" ] 
 services.SeedService.baseSeed: 1225215210856415233
 
-#physics.producers.g4run.debug.trackingVerbosityLevel : 1
-#physics.producers.g4run.debug.steppingVerbosityLevel : 1
