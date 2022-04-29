@@ -3,9 +3,6 @@
 #
 
 #include "Offline/fcl/standardServices.fcl"
-#include "Offline/CommonMC/fcl/prolog.fcl"
-#include "Production/JobConfig/common/prolog.fcl"
-#include "Production/JobConfig/pileup/prolog.fcl"
 
 process_name: MakeSTMSteps
 
@@ -16,8 +13,13 @@ source : {
 services : @local::Services.Sim
 physics: {
   producers : {
-    makeSTMSteps : { module_type : MakeSTMSteps
-                     stepPointMCsTag : "HPGeFilter:stmDet1"
+    HPGeSteps : { module_type : MakeSTMSteps
+                  stepPointMCsTag : "STMFilter:stmDet1"
+      		  verbosityLevel : 0
+    }
+    LaBrSteps : { module_type : MakeSTMSteps
+                  stepPointMCsTag : "STMFilter:stmDet2"
+		  verbosityLevel : 0
     }
   }
   filters : {
@@ -25,7 +27,7 @@ physics: {
   analyzers : {
   }
   # setup paths
-  stmDetStepPath : [ makeSTMSteps ]
+  stmDetStepPath : [ HPGeSteps, LaBrSteps ]
   trigger_paths: [ stmDetStepPath ]
   outPath : [ STMOutput ]
   end_paths: [outPath]
@@ -35,13 +37,12 @@ outputs: {
 
   STMOutput : {
     module_type: RootOutput
-    outputCommands:   [ "keep *_*_*_*" ] #,
-#      "keep *_HPGeFilter_*_*",
-#      "keep *_genCounter_*_*"
-#    ]
+    outputCommands:   [ "keep *_*_*_*" ] # keep everything for the time being
     SelectEvents: [stmDetStepPath]
     fileName : "dts.owner.STM.version.sequencer.art"
   }
 }
+
+#include "Production/JobConfig/common/epilog.fcl"
 
 services.SeedService.baseSeed: 1225215210856415233
