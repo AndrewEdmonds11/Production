@@ -1,0 +1,47 @@
+#
+# Create zero-suppressed STMDigis from unsuppressed STMDigis
+#
+
+#include "Offline/fcl/standardServices.fcl"
+#include "Offline/CommonMC/fcl/prolog.fcl"
+#include "Production/JobConfig/common/prolog.fcl"
+#include "Production/JobConfig/pileup/prolog.fcl"
+
+process_name: STMZeroSuppression
+
+source : {
+  module_type : RootInput
+}
+
+services : @local::Services.Reco
+physics: {
+  producers : {
+    makeSTMZPDigis : { module_type : STMZeroSuppression
+                       stmDigisTag : "FromSTMTestBeamData"
+		       samplingFrequency : 370 # MHz
+		       tbefore : 2000 # ns
+		       tafter : 20000 # ns
+		       threshold : -100
+    }		     
+  }
+  filters : {
+  }
+  analyzers : {
+  }
+  # setup paths
+  stmZPDigiPath : [ makeSTMZPDigis ]
+  trigger_paths: [ stmZPDigiPath ]
+  outPath : [ STMOutput ]
+  end_paths: [outPath]
+}
+
+outputs: {
+
+  STMOutput : {
+    module_type: RootOutput
+    outputCommands:   [ "drop *_*_*_*",
+    		      	"keep *_*_*_STMZeroSuppression" ]
+    SelectEvents: [stmZPDigiPath]
+    fileName : "dig.owner.STMZP.version.sequencer.art"
+  }
+}
