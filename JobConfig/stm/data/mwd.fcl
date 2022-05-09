@@ -1,0 +1,43 @@
+#
+# Create STMHits from STMDigis
+#
+
+#include "Offline/fcl/standardServices.fcl"
+#include "Offline/CommonMC/fcl/prolog.fcl"
+#include "Production/JobConfig/common/prolog.fcl"
+#include "Production/JobConfig/pileup/prolog.fcl"
+
+process_name: STMMovingWindowDeconvolution
+
+source : {
+  module_type : RootInput
+}
+
+services : @local::Services.Reco
+physics: {
+  producers : {
+    makeSTMMWDDigis : { module_type : STMMovingWindowDeconvolution
+                    stmDigisTag : "makeSTMZPDigis"
+    }		     
+  }
+  filters : {
+  }
+  analyzers : {
+  }
+  # setup paths
+  stmMWDDigiPath : [ makeSTMMWDDigis ]
+  trigger_paths: [ stmMWDDigiPath ]
+  outPath : [ STMOutput ]
+  end_paths: [outPath]
+}
+
+outputs: {
+
+  STMOutput : {
+    module_type: RootOutput
+    outputCommands:   [ "drop *_*_*_*",
+    		      	"keep *_*_*_STMMovingWindowDeconvolution" ]
+    SelectEvents: [stmMWDDigiPath]
+    fileName : "dig.owner.STMMWD.version.sequencer.art"
+  }
+}
