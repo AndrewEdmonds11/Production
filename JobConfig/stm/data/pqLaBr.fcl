@@ -1,0 +1,44 @@
+#
+# Create STMHits from STMDigis
+#
+
+#include "Offline/fcl/standardServices.fcl"
+#include "Offline/CommonMC/fcl/prolog.fcl"
+#include "Production/JobConfig/common/prolog.fcl"
+#include "Production/JobConfig/pileup/prolog.fcl"
+
+process_name: STMPulseQuality
+
+source : {
+  module_type : RootInput
+}
+
+services : @local::Services.Reco
+physics: {
+  producers : {
+    makeSTMPQDigis : { module_type : STMPulseQuality
+      stmDigisTag : "LaBrZPDigis"
+    }
+  }
+  filters : {
+  }
+  analyzers : {
+  }
+  # setup paths
+  stmPQDigiPath : [ makeSTMPQDigis ]
+  trigger_paths: [ stmPQDigiPath ]
+  outPath : [ STMOutput ]
+  end_paths: [outPath]
+}
+
+outputs: {
+
+  STMOutput : {
+    module_type: RootOutput
+    outputCommands:   [ "drop *_*_*_*",
+      "keep *_*_*_STMZeroSuppression",
+      "keep *_*_*_STMPulseQuality" ]
+    SelectEvents: [stmPQDigiPath]
+    fileName : "dig.owner.STMPQ.version.sequencer.art"
+  }
+}
