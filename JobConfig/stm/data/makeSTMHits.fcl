@@ -1,0 +1,47 @@
+#
+# Create STMHits from STMDigis
+#
+
+#include "Offline/fcl/standardServices.fcl"
+
+process_name: MakeSTMHits
+
+source : {
+  module_type : RootInput
+}
+
+services : @local::Services.Reco
+physics: {
+  producers : {
+    makeSTMHits : { module_type : MakeSTMHits
+                     stmDigisTag : "makeSTMMWDDigis"
+    }
+  }
+  filters : {
+  }
+  analyzers : {
+  }
+  # setup paths
+  stmHitPath : [ makeSTMHits ]
+  trigger_paths: [ stmHitPath ]
+  outPath : [ STMOutput ]
+  end_paths: [outPath]
+}
+
+outputs: {
+
+  STMOutput : {
+    module_type: RootOutput
+    outputCommands:   [ "keep *_*_*_*" ] #,
+#      "keep *_HPGeFilter_*_*",
+#      "keep *_genCounter_*_*"
+#    ]
+    SelectEvents: [stmHitPath]
+    fileName : "mcs.owner.STM.version.sequencer.art"
+  }
+}
+
+services.DbService.verbose : 0
+services.DbService.textFile : [ "STMCalibration/stmTest.txt" ]
+services.ProditionsService.stmEnergyCalib.verbose : 0
+services.ProditionsService.stmEnergyCalib.useDb : true
